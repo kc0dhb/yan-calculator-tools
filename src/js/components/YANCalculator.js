@@ -22,7 +22,7 @@ var YANCalculator = React.createClass({
       volume_units: 'liter',
       target_yan: 250,
       // target_yan_units: PPM
-      organic_ratio: 40,
+      organic_ratio: 30,
 
       // TODO convert split to generic
       // TODO make split editable...
@@ -83,13 +83,18 @@ var YANCalculator = React.createClass({
     };
     var total_gravity_points = this.state.original_gravity - this.state.final_gravity;
     var body = {
-      gravity: [<td>At Gravity</td>],
-      fermaid_O_split: [<td>Fermaid O Split</td>],
-      fermaid_O: [<td>Fermaid O</td>],
-      fermaid_O_YAN:[<td>Fermaid O YAN</td>],
-      dap_split: [<td>DAP Split</td>],
-      dap: [<td>DAP</td>],
-      dap_YAN:[<td>DAP YAN</td>]
+      gravity: [<td>At Gravity (sg)</td>],
+      fermaid_O_split: [<td>Fermaid O (%)</td>],
+      fermaid_O: [<td>Fermaid O (g)</td>],
+      fermaid_O_YAN:[<td>Fermaid O YAN (ppm))</td>],
+      dap_split: [<td>DAP (%)</td>],
+      dap: [<td>DAP (g)</td>],
+      dap_YAN:[<td>DAP YAN (ppm))</td>]
+    };
+
+    var total_yan = {
+      dap: this.state.target_yan * ((100 - this.state.organic_ratio)/100),
+      fermaid_O: this.state.target_yan * (this.state.organic_ratio/100)
     };
 
     for (var i = 0; i < this.state.steps.length; i++) {
@@ -98,13 +103,22 @@ var YANCalculator = React.createClass({
 
       //percentages
       if (!step.total) {
+        //TODO do some abstractions
         body.fermaid_O_split.push(<td>{(step.fermaid_O_split/total.fermaid_O_split*100).toFixed(2)+'%'}</td>);
         body.dap_split.push(<td>{(step.dap_split/total.dap_split*100).toFixed(2)+'%'}</td>);
+
+        body.dap_YAN.push(<td>{(total_yan.dap*step.dap_split/100).toFixed(2)}</td>);
+        body.fermaid_O_YAN.push(<td>{(total_yan.fermaid_O*step.fermaid_O_split/100).toFixed(2)}</td>);
+
         //TODO round properly
         body.gravity.push(<td>{(this.state.original_gravity - (total_gravity_points * step.when)).toFixed(3)}</td>);
       } else {
         body.fermaid_O_split.push(<td>{'100%'}</td>);
         body.dap_split.push(<td>{'100%'}</td>);
+
+        body.dap_YAN.push(<td>{total_yan.dap}</td>);
+        body.fermaid_O_YAN.push(<td>{total_yan.fermaid_O}</td>);
+
         body.gravity.push(<td>N/A</td>);
       }
 
