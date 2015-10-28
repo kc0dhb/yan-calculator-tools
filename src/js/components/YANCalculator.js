@@ -169,7 +169,7 @@ var YANCalculator = React.createClass({
           </tr>
         </thead>
         <tbody>
-        {renderedBody}
+          {renderedBody}
         </tbody>
       </Table>
     );
