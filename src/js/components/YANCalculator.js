@@ -177,19 +177,19 @@ var YANCalculator = React.createClass({
   renderForm: function() {
     return (
       <Form compact={true} onSubmit={this._onFormSubmit}>
-        <FormField label="Volume" htmlFor="volume" >
+        <FormField label="Volume (liters)" htmlFor="volume" >
           <input id="volume" type="number" onChange={this._onChange} value={this.state.volume}/>
         </FormField>
-        <FormField label="Original Gravity" htmlFor="original_gravity" >
+        <FormField label="Original Gravity (sg)" htmlFor="original_gravity" >
           <input id="original_gravity" {...SG_PROPERTIES} onChange={this._onChange} value={this.state.original_gravity}/>
         </FormField>
-        <FormField label="Final Gravity" htmlFor="final_gravity" >
+        <FormField label="Final Gravity (sg)" htmlFor="final_gravity" >
           <input id="final_gravity" {...SG_PROPERTIES} onChange={this._onChange} value={this.state.final_gravity}/>
         </FormField>
-        <FormField label="YAN" htmlFor="target_yan" >
+        <FormField label="YAN (ppm)" htmlFor="target_yan" >
           <input id="target_yan" type="number" onChange={this._onChange} value={this.state.target_yan}/>
         </FormField>
-        <FormField label="Organic Percentage" htmlFor="organic_ratio" >
+        <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" >
           <input id="organic_ratio" min="0" max="100" type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
         <FormField htmlFor="details" >
