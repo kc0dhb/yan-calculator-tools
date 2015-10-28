@@ -7,6 +7,10 @@ var Form = require('grommet/components/Form');
 var FormField = require('grommet/components/FormField');
 var CheckBox = require('grommet/components/CheckBox');
 
+var Tiles = require('grommet/components/Tiles');
+var Tile = require('grommet/components/Tile');
+
+
 var SG_PROPERTIES = {
   type: "number",
   min: "0",
@@ -215,20 +219,20 @@ var YANCalculator = React.createClass({
       }
 
       steps.push(
-        <Section pad="none">
+        <Tile className="summary-tile">
           <Header pad="none" tag="h3">{step.name}</Header>
           <Table>
             <tbody>
               {body}
             </tbody>
           </Table>
-        </Section>
+        </Tile>
       );
     };
     return (
-      <Section pad="none">
+      <Tiles pad="none" flush={false}>
         {steps}
-      </Section>
+      </Tiles>
     );
   },
 
