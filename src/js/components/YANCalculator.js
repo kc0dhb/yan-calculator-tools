@@ -105,10 +105,11 @@ var YANCalculator = React.createClass({
       gravity: [<td>At Gravity (sg)</td>],
       fermaid_O_split: [<td>Fermaid O (%)</td>],
       fermaid_O: [<td>Fermaid O (g)</td>],
-      fermaid_O_YAN:[<td>Fermaid O YAN (ppm)</td>],
+      fermaid_O_YAN: [<td>Fermaid O YAN (ppm)</td>],
+      blank_row: [<td></td>],
       dap_split: [<td>DAP (%)</td>],
       dap: [<td>DAP (g)</td>],
-      dap_YAN:[<td>DAP YAN (ppm)</td>]
+      dap_YAN: [<td>DAP YAN (ppm)</td>]
     };
     var simple=['gravity', 'fermaid_O', 'dap'];
     var total_yan = {
