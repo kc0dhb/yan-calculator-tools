@@ -29,7 +29,7 @@ var SIMPLE_FIELDS = ['gravity', 'fermaid_O', 'dap'];
 
 // in order
 var FIELD_LABELS = {
-  gravity: 'At Gravity (sg)',
+  gravity: 'Gravity (sg)',
   fermaid_O_split: 'Fermaid O (%)',
   fermaid_O: 'Fermaid O (g)',
   fermaid_O_YAN: 'Fermaid O YAN (ppm)',
@@ -79,7 +79,7 @@ var YANCalculator = React.createClass({
         fermaid_O_split: 20
       },{
         total: true,
-        name: 'TOTAL',
+        name: 'Total',
         dap_split: null,
         fermaid_O_split: null
       }]
@@ -215,8 +215,8 @@ var YANCalculator = React.createClass({
       }
 
       steps.push(
-        <Section>
-          <Header>{step.name}</Header>
+        <Section pad="none">
+          <Header pad="none" tag="h3">{step.name}</Header>
           <Table>
             <tbody>
               {body}
@@ -226,7 +226,7 @@ var YANCalculator = React.createClass({
       );
     };
     return (
-      <Section>
+      <Section pad="none">
         {steps}
       </Section>
     );
