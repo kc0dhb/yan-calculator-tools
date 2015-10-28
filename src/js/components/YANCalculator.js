@@ -259,10 +259,10 @@ var YANCalculator = React.createClass({
           <input id="organic_ratio" min="0" max="100" type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
         <FormField htmlFor="details" help="To see more details in the output">
-          <CheckBox id="details" toggle={true} name="details" label="Show Details" checked={this.state.details} onChange={this._onChangeCheckBox}/>
+          <CheckBox id="details" name="details" label="Show Details" checked={this.state.details} onChange={this._onChangeCheckBox}/>
         </FormField>
         <FormField htmlFor="table">
-          <CheckBox id="table" toggle={true} name="table" label="Show as Table" checked={this.state.table} onChange={this._onChangeCheckBox}/>
+          <CheckBox id="table" name="table" label="Show as Table" checked={this.state.table} onChange={this._onChangeCheckBox}/>
         </FormField>
 
       </Form>
