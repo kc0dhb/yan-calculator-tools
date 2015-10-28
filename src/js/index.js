@@ -3,6 +3,7 @@ require('../scss/index.scss');
 var React = require('react');
 var App = require('grommet/components/App');
 var Footer = require('grommet/components/Footer');
+var Header = require('grommet/components/Header');
 var YANCalculator = require('./components/YANCalculator');
 
 var Main = React.createClass({
@@ -11,6 +12,10 @@ var Main = React.createClass({
     //TODO get footer to float to bottom?
     return (
       <App centered={false}>
+        <Header appCentered={false} direction="column"
+          align="center" pad="small" colorIndex="grey-1">
+          <p>YAN Calculator</p>
+        </Header>
         <YANCalculator />
         <Footer appCentered={false} direction="column"
           align="end" pad="small" colorIndex="grey-1">

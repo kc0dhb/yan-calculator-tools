@@ -205,11 +205,9 @@ var YANCalculator = React.createClass({
     return (
       <Section primary={true} pad="medium">
         <Section key="inputs">
-          <p>Here be Inputs</p>
           {this.renderForm()}
         </Section>
         <Section key="outputs" pad="medium">
-          <p>Here be Outputs</p>
           {this.renderTable()}
         </Section>
       </Section>
