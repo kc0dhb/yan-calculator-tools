@@ -240,35 +240,41 @@ var YANCalculator = React.createClass({
   renderOutput: function() {
     return this.state.table ? this.renderTable() : this.renderFlat();
   },
+  getInputTable: function() {
+    return (
+      <Table>
+        <tbody>
+          <tr>
+            <td>Volume (liters)</td>
+            <td>{this.state.volume.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>Original Gravity (sg)</td>
+            <td>{this.state.original_gravity.toFixed(3)}</td>
+          </tr>
+          <tr>
+            <td>Final Gravity (sg)</td>
+            <td>{this.state.final_gravity.toFixed(3)}</td>
+          </tr>
+          <tr>
+            <td>YAN (ppm)</td>
+            <td>{this.state.target_yan}</td>
+          </tr>
+          <tr>
+            <td>Organic Percentage (%)</td>
+            <td>{this.state.organic_ratio}</td>
+          </tr>
+        </tbody>
+      </Table>
+
+    );
+  },
+
   renderPrintTile: function() {
     return (
       <Tile className="print summary-tile">
         <Header pad="none" tag="h3">Essentials</Header>
-
-        <Table>
-          <tbody>
-            <tr>
-              <td>Volume (liters)</td>
-              <td>{this.state.volume.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td>Original Gravity (sg)</td>
-              <td>{this.state.original_gravity.toFixed(3)}</td>
-            </tr>
-            <tr>
-              <td>Final Gravity (sg)</td>
-              <td>{this.state.final_gravity.toFixed(3)}</td>
-            </tr>
-            <tr>
-              <td>YAN (ppm)</td>
-              <td>{this.state.target_yan}</td>
-            </tr>
-            <tr>
-              <td>Organic Percentage (%)</td>
-              <td>{this.state.organic_ratio}</td>
-            </tr>
-          </tbody>
-        </Table>
+        {this.getInputTable()}
       </Tile>
     );
   },
@@ -303,11 +309,17 @@ var YANCalculator = React.createClass({
   },
 
   render: function() {
-
+    var input;
+    if (this.state.table) {
+      input = this.renderPrintTile();
+    }
     return (
       <Section primary={true} pad="medium">
         <Section pad="none" className="no-print" key="inputs">
           {this.renderForm()}
+        </Section>
+        <Section pad="none" className="print" key="print-input">
+          {input}
         </Section>
         <Section pad="none" key="outputs">
           {this.renderOutput()}
