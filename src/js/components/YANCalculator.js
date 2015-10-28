@@ -171,7 +171,7 @@ var YANCalculator = React.createClass({
 
   renderForm: function() {
     return (
-      <Form compact="true" onSubmit={this._onFormSubmit}>
+      <Form compact={true} onSubmit={this._onFormSubmit}>
         <FormField label="Volume" htmlFor="volume" >
           <input id="volume" type="number" onChange={this._onChange} value={this.state.volume}/>
         </FormField>
@@ -194,7 +194,7 @@ var YANCalculator = React.createClass({
   render: function() {
 
     return (
-      <Section primary={true} direction="row" pad="medium">
+      <Section primary={true} pad="medium">
         <Section key="inputs">
           <p>Here be Inputs</p>
           {this.renderForm()}
