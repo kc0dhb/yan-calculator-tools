@@ -14,7 +14,12 @@ var opts = {
   mainJs: 'src/js/index.js',
   mainScss: 'src/scss/index.scss',
   devServerPort: 9000,
-  scsslint: true
+  scsslint: true,
+  sync: {
+    hostname: 'meadadvocate.org',
+    username: 'root',
+    remoteDestination: '/var/www/tools/yan-calculator-tools'
+  }
 };
 
 devGulpTasks(gulp, opts);
