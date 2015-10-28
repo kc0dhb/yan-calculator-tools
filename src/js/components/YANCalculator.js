@@ -231,6 +231,7 @@ var YANCalculator = React.createClass({
     };
     return (
       <Tiles pad="none" flush={false}>
+        {this.renderPrintTile()}
         {steps}
       </Tiles>
     );
@@ -238,6 +239,38 @@ var YANCalculator = React.createClass({
 
   renderOutput: function() {
     return this.state.table ? this.renderTable() : this.renderFlat();
+  },
+  renderPrintTile: function() {
+    return (
+      <Tile className="print summary-tile">
+        <Header pad="none" tag="h3">Essentials</Header>
+
+        <Table>
+          <tbody>
+            <tr>
+              <td>Volume (liters)</td>
+              <td>{this.state.volume.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td>Original Gravity (sg)</td>
+              <td>{this.state.original_gravity.toFixed(3)}</td>
+            </tr>
+            <tr>
+              <td>Final Gravity (sg)</td>
+              <td>{this.state.final_gravity.toFixed(3)}</td>
+            </tr>
+            <tr>
+              <td>YAN (ppm)</td>
+              <td>{this.state.target_yan}</td>
+            </tr>
+            <tr>
+              <td>Organic Percentage (%)</td>
+              <td>{this.state.organic_ratio}</td>
+            </tr>
+          </tbody>
+        </Table>
+      </Tile>
+    );
   },
 
   renderForm: function() {
@@ -273,10 +306,10 @@ var YANCalculator = React.createClass({
 
     return (
       <Section primary={true} pad="medium">
-        <Section key="inputs">
+        <Section pad="none" className="no-print" key="inputs">
           {this.renderForm()}
         </Section>
-        <Section key="outputs" pad="medium">
+        <Section pad="none" key="outputs">
           {this.renderOutput()}
         </Section>
       </Section>

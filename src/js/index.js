@@ -12,11 +12,11 @@ var Main = React.createClass({
     //TODO get footer to float to bottom?
     return (
       <App centered={false}>
-        <Header appCentered={false} direction="column" align="center" pad="none" colorIndex="grey-1">
+        <Header className="no-print" appCentered={false} direction="column" align="center" pad="none" colorIndex="grey-1">
           <p>YAN Calculator</p>
         </Header>
         <YANCalculator />
-        <Footer appCentered={false} direction="column" align="end" pad={{horizontal: 'small'}} colorIndex="grey-1">
+        <Footer className="no-print" appCentered={false} direction="column" align="end" pad={{horizontal: 'small'}} colorIndex="grey-1">
           <div>Fork it on <a href="https://github.com/kc0dhb/yan-calculator-tools" target="_blank">github</a>!</div>
         </Footer>
       </App>

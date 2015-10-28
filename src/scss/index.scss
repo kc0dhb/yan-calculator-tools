@@ -6,7 +6,24 @@
 tr.bold {
   font-weight: bold;
 }
+td {
+  line-height: 12px;
+}
 
 .summary-tile {
   border: 1px solid #CCC;
+}
+
+
+.print {
+  display: none;
+}
+
+@media print {
+  .no-print {
+    display: none;
+  }
+  .print {
+    display: inherit;
+  }
 }
