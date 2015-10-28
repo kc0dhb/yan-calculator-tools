@@ -35,7 +35,7 @@ var YANCalculator = React.createClass({
       volume_units: 'liter',
       target_yan: 250,
       // target_yan_units: PPM
-      organic_ratio: 30,
+      organic_ratio: 35,
 
       // TODO convert split to generic
       // TODO make split editable...
@@ -44,17 +44,17 @@ var YANCalculator = React.createClass({
         when: 0,
         allow_DAP: false,
         dap_split: 0,
-        fermaid_O_split: 25
+        fermaid_O_split: 40
       },{
         name: 'End of Lag',
         when: 0,
         dap_split: 50,
-        fermaid_O_split: 25
+        fermaid_O_split: 20
       },{
         name: '1/6 Sugar Break',
         when: 1/6,
         dap_split: 40,
-        fermaid_O_split: 30
+        fermaid_O_split: 20
       },{
         name: '1/3 Sugar Break',
         when: 1/3,
