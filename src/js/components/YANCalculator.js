@@ -176,7 +176,7 @@ var YANCalculator = React.createClass({
 
   renderForm: function() {
     return (
-      <Form compact={true} onSubmit={this._onFormSubmit}>
+      <Form onSubmit={this._onFormSubmit}>
         <FormField label="Volume (liters)" htmlFor="volume" >
           <input id="volume" type="number" onChange={this._onChange} value={this.state.volume}/>
         </FormField>
