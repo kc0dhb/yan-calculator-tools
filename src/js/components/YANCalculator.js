@@ -4,6 +4,7 @@ var Section = require('grommet/components/Section');
 var Table = require('grommet/components/Table');
 var Form = require('grommet/components/Form');
 var FormField = require('grommet/components/FormField');
+var CheckBox = require('grommet/components/CheckBox');
 
 var SG_PROPERTIES = {
   type: "number",
@@ -77,6 +78,12 @@ var YANCalculator = React.createClass({
     event.preventDefault();
   },
 
+  _onChangeCheckBox:function(event) {
+    var change = {};
+    change[event.target.id] = event.target.checked;
+    this.setState(change);
+  },
+
   _onChange: function(event) {
     var change = {};
     change[event.target.id] = event.target.value;
@@ -103,7 +110,7 @@ var YANCalculator = React.createClass({
       dap: [<td>DAP (g)</td>],
       dap_YAN:[<td>DAP YAN (ppm)</td>]
     };
-
+    var simple=['gravity', 'fermaid_O', 'dap'];
     var total_yan = {
       dap: this.state.target_yan * ((100 - this.state.organic_ratio)/100),
       fermaid_O: this.state.target_yan * (this.state.organic_ratio/100)
@@ -149,11 +156,9 @@ var YANCalculator = React.createClass({
     };
     var renderedBody =[];
     for (var part in body) {
-      var additions = {};
-      if (part === 'fermaid_O' || part === 'dap') {
-        additions.className="bold";
+      if (simple.indexOf(part) !== -1 || this.state.details) {
+        renderedBody.push(<tr>{body[part]}</tr>);
       }
-      renderedBody.push(<tr {...additions}>{body[part]}</tr>);
     }
     return (
       <Table>
@@ -186,6 +191,9 @@ var YANCalculator = React.createClass({
         </FormField>
         <FormField label="Organic Percentage" htmlFor="organic_ratio" >
           <input id="organic_ratio" min="0" max="100" type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
+        </FormField>
+        <FormField htmlFor="details" >
+          <CheckBox id="details" toggle={true} name="details" label="Show Details" checked={this.state.details} onChange={this._onChangeCheckBox}/>
         </FormField>
       </Form>
     );
