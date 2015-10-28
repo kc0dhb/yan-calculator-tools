@@ -120,39 +120,33 @@ var YANCalculator = React.createClass({
     for (var i = 0; i < this.state.steps.length; i++) {
       var step = this.state.steps[i];
       headers.push(<th>{step.name}</th>);
-
+      var stepSummary = {};
       //percentages
       if (!step.total) {
         //TODO do some abstractions
-        body.fermaid_O_split.push(<td>{(step.fermaid_O_split/total.fermaid_O_split*100).toFixed(2)+'%'}</td>);
-        body.dap_split.push(<td>{(step.dap_split/total.dap_split*100).toFixed(2)+'%'}</td>);
+        stepSummary.fermaid_O_split = (step.fermaid_O_split/total.fermaid_O_split*100).toFixed(2);
+        stepSummary.fermaid_O_YAN = (total_yan.fermaid_O*step.fermaid_O_split/100).toFixed(2);
+        stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
 
-        var dap_YAN = total_yan.dap*step.dap_split/100;
-        var fermaid_YAN = total_yan.fermaid_O*step.fermaid_O_split/100;
+        stepSummary.dap_split = (step.dap_split/total.dap_split*100).toFixed(2);
+        stepSummary.dap_YAN = (total_yan.dap*step.dap_split/100).toFixed(2);
+        stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
 
-        body.dap_YAN.push(<td>{(dap_YAN).toFixed(2)}</td>);
-        body.dap.push(<td>{(dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2)}</td>);
-
-        body.fermaid_O_YAN.push(<td>{(fermaid_YAN).toFixed(2)}</td>);
-        body.fermaid_O.push(<td>{(fermaid_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2)}</td>);
-
-        //TODO round properly
-        body.gravity.push(<td>{(this.state.original_gravity - (total_gravity_points * step.when)).toFixed(3)}</td>);
+        stepSummary.gravity = (this.state.original_gravity - (total_gravity_points * step.when)).toFixed(3);
       } else {
-        body.fermaid_O_split.push(<td>{'100%'}</td>);
-        body.dap_split.push(<td>{'100%'}</td>);
+        stepSummary.fermaid_O_split = 100;
+        stepSummary.fermaid_O_YAN = (total_yan.fermaid_O).toFixed(2);
+        stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
 
-        body.dap_YAN.push(<td>{total_yan.dap}</td>);
-        body.dap.push(<td>{(total_yan.dap*this.state.volume/nutrients.dap.inorganic).toFixed(2)}</td>);
+        stepSummary.dap_split = 100;
+        stepSummary.dap_YAN = (total_yan.dap).toFixed(2);
+        stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
 
-        body.fermaid_O_YAN.push(<td>{total_yan.fermaid_O}</td>);
-        body.fermaid_O.push(<td>{(total_yan.fermaid_O*this.state.volume/nutrients.fermaid_O.organic).toFixed(2)}</td>);
-
-
-        body.gravity.push(<td>N/A</td>);
+        stepSummary.gravity = "N/A";
       }
-
-      // gravities
+      for (var key in stepSummary) {
+        body[key].push(<td>{stepSummary[key]}</td>);
+      }
 
     };
     var renderedBody =[];
