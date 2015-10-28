@@ -90,17 +90,61 @@ var YANCalculator = React.createClass({
     this.setState(change);
   },
 
-  renderTable: function() {
-    var headers = [<th>Nutrient</th>];
-    var total = {
+  _calculateStepTotals : function(step, totals) {
+    var stepSummary = {};
+    if (!step.total) {
+      //TODO do some abstractions
+      stepSummary.fermaid_O_split = (step.fermaid_O_split/totals.fermaid_O_split*100).toFixed(2);
+      stepSummary.fermaid_O_YAN = (totals.fermaid_O_YAN*step.fermaid_O_split/100).toFixed(2);
+      stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
+
+      stepSummary.dap_split = (step.dap_split/totals.dap_split*100).toFixed(2);
+      stepSummary.dap_YAN = (totals.dap_YAN*step.dap_split/100).toFixed(2);
+      stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
+
+      stepSummary.gravity = (this.state.original_gravity - (totals.gravity * step.when)).toFixed(3);
+    } else {
+      stepSummary.fermaid_O_split = 100;
+      stepSummary.fermaid_O_YAN = (totals.fermaid_O_YAN).toFixed(2);
+      stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
+
+      stepSummary.dap_split = 100;
+      stepSummary.dap_YAN = (totals.dap_YAN).toFixed(2);
+      stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
+
+      stepSummary.gravity = "N/A";
+    }
+    return stepSummary;
+  },
+
+  _getStepSummaries: function() {
+    var totals = {
       fermaid_O_split : 0,
-      dap_split : 0
+      dap_split : 0,
+      gravity : this.state.original_gravity - this.state.final_gravity,
+      dap_YAN : this.state.target_yan * ((100 - this.state.organic_ratio)/100),
+      fermaid_O_YAN: this.state.target_yan * (this.state.organic_ratio/100)
     };
     for (var i = this.state.steps.length - 1; i >= 0; i--) {
-      total.fermaid_O_split+=this.state.steps[i].fermaid_O_split;
-      total.dap_split+=this.state.steps[i].dap_split;
+      totals.fermaid_O_split+=this.state.steps[i].fermaid_O_split;
+      totals.dap_split+=this.state.steps[i].dap_split;
     };
-    var total_gravity_points = this.state.original_gravity - this.state.final_gravity;
+
+    var stepSummaries = [];
+    for (var i = 0; i < this.state.steps.length; i++) {
+      stepSummaries.push(this._calculateStepTotals(this.state.steps[i], totals));
+    }
+    return stepSummaries;
+  },
+
+  renderTable: function() {
+    var stepSummaries = this._getStepSummaries();
+
+    var headers = [<th>Nutrient</th>];
+    for (var i = 0; i < this.state.steps.length; i++) {
+      headers.push(<th>{this.state.steps[i].name}</th>);
+    }
+
     var body = {
       gravity: [<td>At Gravity (sg)</td>],
       fermaid_O_split: [<td>Fermaid O (%)</td>],
@@ -112,43 +156,16 @@ var YANCalculator = React.createClass({
       dap_YAN: [<td>DAP YAN (ppm)</td>]
     };
     var simple=['gravity', 'fermaid_O', 'dap'];
-    var total_yan = {
-      dap: this.state.target_yan * ((100 - this.state.organic_ratio)/100),
-      fermaid_O: this.state.target_yan * (this.state.organic_ratio/100)
-    };
 
-    for (var i = 0; i < this.state.steps.length; i++) {
-      var step = this.state.steps[i];
-      headers.push(<th>{step.name}</th>);
-      var stepSummary = {};
-      //percentages
-      if (!step.total) {
-        //TODO do some abstractions
-        stepSummary.fermaid_O_split = (step.fermaid_O_split/total.fermaid_O_split*100).toFixed(2);
-        stepSummary.fermaid_O_YAN = (total_yan.fermaid_O*step.fermaid_O_split/100).toFixed(2);
-        stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
 
-        stepSummary.dap_split = (step.dap_split/total.dap_split*100).toFixed(2);
-        stepSummary.dap_YAN = (total_yan.dap*step.dap_split/100).toFixed(2);
-        stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
+    for (var i = 0; i < stepSummaries.length; i++) {
+      var stepSummary = stepSummaries[i];
 
-        stepSummary.gravity = (this.state.original_gravity - (total_gravity_points * step.when)).toFixed(3);
-      } else {
-        stepSummary.fermaid_O_split = 100;
-        stepSummary.fermaid_O_YAN = (total_yan.fermaid_O).toFixed(2);
-        stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
-
-        stepSummary.dap_split = 100;
-        stepSummary.dap_YAN = (total_yan.dap).toFixed(2);
-        stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
-
-        stepSummary.gravity = "N/A";
-      }
       for (var key in stepSummary) {
         body[key].push(<td>{stepSummary[key]}</td>);
       }
-
     };
+
     var renderedBody =[];
     for (var part in body) {
       if (simple.indexOf(part) !== -1 || this.state.details) {
