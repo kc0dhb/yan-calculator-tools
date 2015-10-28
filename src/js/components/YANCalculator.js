@@ -28,23 +28,28 @@ var YANCalculator = React.createClass({
         name: 'At Mix',
         when: 0,
         allow_DAP: false,
-        percentage: 20
+        dap_split: 0,
+        fermaid_O_split: 25
       },{
         name: 'End of Lag',
         when: 0,
-        percentage: 30
+        dap_split: 50,
+        fermaid_O_split: 25
       },{
         name: '1/6 Sugar Break',
         when: 1/6,
-        percentage: 30
+        dap_split: 40,
+        fermaid_O_split: 30
       },{
         name: '1/3 Sugar Break',
         when: 1/3,
-        percentage: 20
+        dap_split: 10,
+        fermaid_O_split: 20
       },{
-        //DEBUG
+        total: true,
         name: 'TOTAL',
-        percentage: null
+        dap_split: null,
+        fermaid_O_split: null
       }]
       //TODO other properties to do later
       // types of nutrients
@@ -63,18 +68,24 @@ var YANCalculator = React.createClass({
     change[event.target.id] = event.target.value;
     this.setState(change);
   },
+
   renderTable: function() {
     var headers = [<th>Nutrient</th>];
-    var total = 0;
+    var total = {
+      fermaid_O_split : 0,
+      dap_split : 0
+    };
     for (var i = this.state.steps.length - 1; i >= 0; i--) {
-      total+=this.state.steps[i].percentage;
+      total.fermaid_O_split+=this.state.steps[i].fermaid_O_split;
+      total.dap_split+=this.state.steps[i].dap_split;
     };
     var total_gravity_points = this.state.original_gravity - this.state.final_gravity;
     var body = {
-      percentages: [<td>Percentage</td>],
       gravity: [<td>At Gravity</td>],
+      fermaid_O_split: [<td>Fermaid O Split</td>],
       fermaid_O: [<td>Fermaid O</td>],
       fermaid_O_YAN:[<td>Fermaid O YAN</td>],
+      dap_split: [<td>DAP Split</td>],
       dap: [<td>DAP</td>],
       dap_YAN:[<td>DAP YAN</td>]
     };
@@ -84,19 +95,24 @@ var YANCalculator = React.createClass({
       headers.push(<th>{step.name}</th>);
 
       //percentages
-      if (step.percentage) {
-        body.percentages.push(<td>{(step.percentage/total*100).toFixed(2)+'%'}</td>);
+      if (!step.total) {
+        body.fermaid_O_split.push(<td>{(step.fermaid_O_split/total.fermaid_O_split*100).toFixed(2)+'%'}</td>);
+        body.dap_split.push(<td>{(step.dap_split/total.dap_split*100).toFixed(2)+'%'}</td>);
         //TODO round properly
         body.gravity.push(<td>{(this.state.original_gravity - (total_gravity_points * step.when)).toFixed(3)}</td>);
       } else {
-        body.percentages.push(<td>{'100%'}</td>);
+        body.fermaid_O_split.push(<td>{'100%'}</td>);
+        body.dap_split.push(<td>{'100%'}</td>);
         body.gravity.push(<td>N/A</td>);
       }
 
       // gravities
 
     };
-
+    var renderedBody =[];
+    for (var part in body) {
+      renderedBody.push(<tr>{body[part]}</tr>);
+    }
     return (
       <Table>
         <thead>
@@ -105,12 +121,7 @@ var YANCalculator = React.createClass({
           </tr>
         </thead>
         <tbody>
-          <tr>{body.percentages}</tr>
-          <tr>{body.gravity}</tr>
-          <tr>{body.fermaid_O}</tr>
-          <tr>{body.fermaid_O_YAN}</tr>
-          <tr>{body.dap}</tr>
-          <tr>{body.dap_YAN}</tr>
+        {renderedBody}
         </tbody>
       </Table>
     );
