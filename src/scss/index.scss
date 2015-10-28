@@ -14,13 +14,13 @@ td {
   border: 1px solid #CCC;
 }
 
-
 .print {
   display: none;
 }
 
 @media print {
   .no-print {
+    visibility: hidden;
     display: none;
   }
   .print {
