@@ -186,13 +186,13 @@ var YANCalculator = React.createClass({
         <FormField label="Final Gravity (sg)" htmlFor="final_gravity" >
           <input id="final_gravity" {...SG_PROPERTIES} onChange={this._onChange} value={this.state.final_gravity}/>
         </FormField>
-        <FormField label="YAN (ppm)" htmlFor="target_yan" >
+        <FormField label="YAN (ppm)" htmlFor="target_yan" help="225 is a good minimum for low nutrient yeast, 450 a max for high nutrient yeast">
           <input id="target_yan" type="number" onChange={this._onChange} value={this.state.target_yan}/>
         </FormField>
-        <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" >
+        <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms">
           <input id="organic_ratio" min="0" max="100" type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
-        <FormField htmlFor="details" >
+        <FormField htmlFor="details" help="To see more details in the output table">
           <CheckBox id="details" toggle={true} name="details" label="Show Details" checked={this.state.details} onChange={this._onChangeCheckBox}/>
         </FormField>
       </Form>
