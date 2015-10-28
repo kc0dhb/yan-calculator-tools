@@ -24,6 +24,8 @@ var YANCalculator = React.createClass({
       // target_yan_units: PPM
       organic_ratio: 40,
 
+      // TODO convert split to generic
+      // TODO make split editable...
       steps: [{
         name: 'At Mix',
         when: 0,
