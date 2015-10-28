@@ -18,8 +18,8 @@ var Main = React.createClass({
         </Header>
         <YANCalculator />
         <Footer appCentered={false} direction="column"
-          align="end" pad="small" colorIndex="grey-1">
-          <p>Fork it on <a href="https://github.com/kc0dhb/yan-calculator-tools" target="_blank">github</a>!</p>
+          align="end" pad={{horizontal: 'small'}} colorIndex="grey-1">
+          <div>Fork it on <a href="https://github.com/kc0dhb/yan-calculator-tools" target="_blank">github</a>!</div>
         </Footer>
       </App>
     );
