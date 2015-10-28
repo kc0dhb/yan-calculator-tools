@@ -1,6 +1,7 @@
 var React = require('react');
 
 var Section = require('grommet/components/Section');
+var Header = require('grommet/components/Section');
 var Table = require('grommet/components/Table');
 var Form = require('grommet/components/Form');
 var FormField = require('grommet/components/FormField');
@@ -24,10 +25,26 @@ var nutrients = {
   }
 };
 
+var SIMPLE_FIELDS = ['gravity', 'fermaid_O', 'dap'];
+
+// in order
+var FIELD_LABELS = {
+  gravity: 'At Gravity (sg)',
+  fermaid_O_split: 'Fermaid O (%)',
+  fermaid_O: 'Fermaid O (g)',
+  fermaid_O_YAN: 'Fermaid O YAN (ppm)',
+  blank_row: '',
+  dap_split: 'DAP (%)',
+  dap: 'DAP (g)',
+  dap_YAN: 'DAP YAN (ppm)'
+};
+
 var YANCalculator = React.createClass({
 
   getInitialState: function() {
     return {
+      table : false,
+
       final_gravity: 0.997,
       original_gravity: 1.100,
       gravity_units: 'sg',
@@ -145,18 +162,10 @@ var YANCalculator = React.createClass({
       headers.push(<th>{this.state.steps[i].name}</th>);
     }
 
-    var body = {
-      gravity: [<td>At Gravity (sg)</td>],
-      fermaid_O_split: [<td>Fermaid O (%)</td>],
-      fermaid_O: [<td>Fermaid O (g)</td>],
-      fermaid_O_YAN: [<td>Fermaid O YAN (ppm)</td>],
-      blank_row: [<td></td>],
-      dap_split: [<td>DAP (%)</td>],
-      dap: [<td>DAP (g)</td>],
-      dap_YAN: [<td>DAP YAN (ppm)</td>]
-    };
-    var simple=['gravity', 'fermaid_O', 'dap'];
-
+    var body = {};
+    for (var field in FIELD_LABELS) {
+      body[field] = [<td>{FIELD_LABELS[field]}</td>];
+    }
 
     for (var i = 0; i < stepSummaries.length; i++) {
       var stepSummary = stepSummaries[i];
@@ -168,7 +177,7 @@ var YANCalculator = React.createClass({
 
     var renderedBody =[];
     for (var part in body) {
-      if (simple.indexOf(part) !== -1 || this.state.details) {
+      if (SIMPLE_FIELDS.indexOf(part) !== -1 || this.state.details) {
         renderedBody.push(<tr>{body[part]}</tr>);
       }
     }
@@ -184,6 +193,47 @@ var YANCalculator = React.createClass({
         </tbody>
       </Table>
     );
+  },
+
+  renderFlat: function() {
+    var stepSummaries = this._getStepSummaries();
+    var steps = [];
+
+    for (var i = 0; i < this.state.steps.length; i++) {
+      var step = this.state.steps[i];
+
+      var body = {};
+      for (var field in FIELD_LABELS) {
+        if (SIMPLE_FIELDS.indexOf(field) !== -1 || this.state.details) {
+          body[field] = (
+            <tr>
+              <td>{FIELD_LABELS[field]}</td>
+              <td>{stepSummaries[i][field]}</td>
+            </tr>
+          );
+        }
+      }
+
+      steps.push(
+        <Section>
+          <Header>{step.name}</Header>
+          <Table>
+            <tbody>
+              {body}
+            </tbody>
+          </Table>
+        </Section>
+      );
+    };
+    return (
+      <Section>
+        {steps}
+      </Section>
+    );
+  },
+
+  renderOutput: function() {
+    return this.state.table ? this.renderTable() : this.renderFlat();
   },
 
   renderForm: function() {
@@ -204,9 +254,13 @@ var YANCalculator = React.createClass({
         <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms">
           <input id="organic_ratio" min="0" max="100" type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
-        <FormField htmlFor="details" help="To see more details in the output table">
+        <FormField htmlFor="details" help="To see more details in the output">
           <CheckBox id="details" toggle={true} name="details" label="Show Details" checked={this.state.details} onChange={this._onChangeCheckBox}/>
         </FormField>
+        <FormField htmlFor="table">
+          <CheckBox id="table" toggle={true} name="table" label="Show as Table" checked={this.state.table} onChange={this._onChangeCheckBox}/>
+        </FormField>
+
       </Form>
     );
   },
@@ -219,7 +273,7 @@ var YANCalculator = React.createClass({
           {this.renderForm()}
         </Section>
         <Section key="outputs" pad="medium">
-          {this.renderTable()}
+          {this.renderOutput()}
         </Section>
       </Section>
     );
