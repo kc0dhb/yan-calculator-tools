@@ -107,11 +107,7 @@ var YANCalculator = React.createClass({
 
   _onChange: function(event) {
     var change = {};
-    if (event.target.type === "number") {
-      change[event.target.id] = parseFloat(event.target.value, 10);
-    } else {
-      change[event.target.id] = event.target.value;
-    }
+    change[event.target.id] = event.target.value;
     this.setState(change);
   },
 
@@ -250,15 +246,15 @@ var YANCalculator = React.createClass({
         <tbody>
           <tr>
             <td>Volume (liters)</td>
-            <td>{this.state.volume.toFixed(2)}</td>
+            <td>{(1*this.state.volume).toFixed(2)}</td>
           </tr>
           <tr>
             <td>Original Gravity (sg)</td>
-            <td>{this.state.original_gravity.toFixed(3)}</td>
+            <td>{(1*this.state.original_gravity).toFixed(3)}</td>
           </tr>
           <tr>
             <td>Final Gravity (sg)</td>
-            <td>{this.state.final_gravity.toFixed(3)}</td>
+            <td>{(1*this.state.final_gravity).toFixed(3)}</td>
           </tr>
           <tr>
             <td>YAN (ppm)</td>
