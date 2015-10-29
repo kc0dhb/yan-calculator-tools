@@ -107,7 +107,11 @@ var YANCalculator = React.createClass({
 
   _onChange: function(event) {
     var change = {};
-    change[event.target.id] = event.target.value;
+    if (event.target.type === "number") {
+      change[event.target.id] = parseFloat(event.target.value, 10);
+    } else {
+      change[event.target.id] = event.target.value;
+    }
     this.setState(change);
   },
 
