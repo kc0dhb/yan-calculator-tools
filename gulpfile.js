@@ -13,7 +13,7 @@ var opts = {
   jsAssets: ['src/js/**/*.js'],
   mainJs: 'src/js/index.js',
   mainScss: 'src/scss/index.scss',
-  devServerPort: 9000,
+  devServerPort: process.env.PORT || 9000,
   scsslint: true,
   sync: {
     hostname: 'meadadvocate.org',
