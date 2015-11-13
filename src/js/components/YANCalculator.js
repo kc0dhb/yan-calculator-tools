@@ -229,7 +229,7 @@ var YANCalculator = React.createClass({
         </Tile>
       );
     };
-      return (
+    return (
       <Tiles pad="none" flush={false}>
         {this.renderPrintTile()}
         {steps}
