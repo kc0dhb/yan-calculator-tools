@@ -206,10 +206,10 @@ var YANCalculator = React.createClass({
     for (var i = 0; i < this.state.steps.length; i++) {
       var step = this.state.steps[i];
 
-      var body = {};
+      var body = [];
       for (var field in FIELD_LABELS) {
         if (SIMPLE_FIELDS.indexOf(field) !== -1 || this.state.details) {
-          body[field] = (
+          body.push(
             <tr>
               <td>{FIELD_LABELS[field]}</td>
               <td>{stepSummaries[i][field]}</td>
@@ -229,7 +229,7 @@ var YANCalculator = React.createClass({
         </Tile>
       );
     };
-    return (
+      return (
       <Tiles pad="none" flush={false}>
         {this.renderPrintTile()}
         {steps}

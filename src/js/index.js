@@ -1,6 +1,7 @@
 require('../scss/index.scss');
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var App = require('grommet/components/App');
 var Footer = require('grommet/components/Footer');
 var Header = require('grommet/components/Header');
@@ -25,6 +26,6 @@ var Main = React.createClass({
 });
 
 var element = document.getElementById('content');
-React.render(React.createElement(Main), element);
+ReactDOM.render(React.createElement(Main), element);
 
 document.body.classList.remove('loading');
