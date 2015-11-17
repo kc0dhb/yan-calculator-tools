@@ -17,6 +17,8 @@ script:
 after_success:
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master"
 - pwd
+- ls -la
+- ls -la dist
 - export SSHPASS=$DEPLOY_PASS
 - sshpass -e scp -rvp dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
 env:
