@@ -49,8 +49,8 @@ var YANCalculator = React.createClass({
     return {
       table : false,
 
-      final_gravity: 0.997,
-      original_gravity: 1.100,
+      final_gravity: 1.005,
+      original_gravity: 1.110,
       gravity_units: 'sg',
       volume: 20,
       volume_units: 'liter',
