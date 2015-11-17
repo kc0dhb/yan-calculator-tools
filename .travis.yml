@@ -20,6 +20,7 @@ after_success:
 - ls -la
 - ls -la dist
 - export SSHPASS=$DEPLOY_PASS
+- ssh-keyscan -t rsa $DEPLOY_HOST >> ~/.ssh/known_hosts
 - sshpass -e rsync -aP dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
 env:
   global:
