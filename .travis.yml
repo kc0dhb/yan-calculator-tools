@@ -15,13 +15,12 @@ script:
 - gem install scss_lint
 - gulp dist
 after_success:
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master"
-- pwd
-- ls -la
-- ls -la dist
-- export SSHPASS=$DEPLOY_PASS
-- ssh-keyscan -t rsa $DEPLOY_HOST >> ~/.ssh/known_hosts
-- sshpass -e rsync -aP dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+- |
+  if [ $TRAVIS_PULL_REQUEST == "false" ] && [ $TRAVIS_BRANCH == "master" ]; then
+    export SSHPASS=$DEPLOY_PASS
+    ssh-keyscan -t rsa $DEPLOY_HOST >> ~/.ssh/known_hosts
+    sshpass -e rsync -aP dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+  fi
 env:
   global:
   - secure: cuRCUcPs6DhGSnRr8IeAQ1KcTMMqp/DwoFfLe7MJTiMFLkv0qp723ONoh9Iao+ydecQI6eCNlVbBoPcXkpM39KZtIuJuVjNcEej5jhZf9MO44kEHnoNwbiSEEVzl8Maoqnmwjii3ApJVal6WyMrqBxWzvvmb/UgABpfoSa4NYwk49hHnT7gH4hBwklJ8jqgXgWcuv9tpFMTcJzdVGycNzHPrL034hcqQ0lx75l9UJ0o/Ykms29KJFLa6hpWY9b25WngQzORyNd4ZULZxuGBpu5sEqNXxq4UpgdTkyuP4t5o3fIdWqhgaFodgs1jCjY062U1bdFvM9m1DDTiP5qNKckUDWuBqpEbzphHXg42exEExwDOyNyjp6KSNe5XS4B3c70W9ZQjhHDBYR/wBT8HZj4JVV+3NHH39imNEqLsTOlXgk6sSh90icZPaOVYKAURnu4ZD7cqkOhprxnTpRTPBNZyI858JAqkTl2JyFryFOixv3KYuArpVWrqEmQyguGCeTHhmzMMwy5gT+bLZ0sfjTvcH2NNFXcySDGZegfp9dzQScbEQhy15SXKMjqzqu3fX1p7JDiLULhubDZQv+/XvLibPtmr8IN1bDRJU8TphGpIwTEzWgXDgJY6Flc2tEBqhaZB33Fro+TeZajqqGP3qWAkskggsx8J8npaBc4vZoDo=
