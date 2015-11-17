@@ -12,7 +12,7 @@ var Tile = require('grommet/components/Tile');
 
 
 var SG_PROPERTIES = {
-    type: "number",
+  type: "number",
   min: "0",
   step: ".001"
 };
@@ -49,8 +49,8 @@ var YANCalculator = React.createClass({
     return {
       table : false,
 
-      final_gravity: 0.997,
-      original_gravity: 1.100,
+      final_gravity: 1.005,
+      original_gravity: 1.110,
       gravity_units: 'sg',
       volume: 20,
       volume_units: 'liter',
@@ -96,11 +96,11 @@ var YANCalculator = React.createClass({
   },
 
   _onFormSubmit: function(event) {
-      event.preventDefault();
+    event.preventDefault();
   },
 
   _onChangeCheckBox:function(event) {
-  var change = {};
+    var change = {};
     change[event.target.id] = event.target.checked;
     this.setState(change);
   },
