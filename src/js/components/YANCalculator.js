@@ -12,7 +12,7 @@ var Tile = require('grommet/components/Tile');
 
 
 var SG_PROPERTIES = {
-  type: "number",
+    type: "number",
   min: "0",
   step: ".001"
 };
@@ -96,11 +96,11 @@ var YANCalculator = React.createClass({
   },
 
   _onFormSubmit: function(event) {
-    event.preventDefault();
+      event.preventDefault();
   },
 
   _onChangeCheckBox:function(event) {
-    var change = {};
+  var change = {};
     change[event.target.id] = event.target.checked;
     this.setState(change);
   },
