@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "src/js/index.js",
   "dependencies": {
-    "grommet": "0.4.0",
+    "grommet": "0.5.5",
     "gulp": "^3.9.0"
   },
   "engines": {
