@@ -17,10 +17,10 @@ script:
 - gulp dist
 after_success:
 - |
-  if [ $TRAVIS_PULL_REQUEST == "false" ] && [ $TRAVIS_BRANCH == "master" ]; then
+  if [ $TRAVIS_PULL_REQUEST == "false" ] ; then
     export SSHPASS=$DEPLOY_PASS
     ssh-keyscan -t rsa $DEPLOY_HOST >> ~/.ssh/known_hosts
-    sshpass -e rsync -aP dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+    sshpass -e rsync -aP dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$TRAVIS_BRANCH
   fi
 notifications:
   email:
