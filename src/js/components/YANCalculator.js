@@ -19,24 +19,23 @@ var SG_PROPERTIES = {
 
 // nutrient provides ppm per g/L
 var nutrients = {
-  fermaid_O: {
+  fermaid_K: {
     organic: 65,
-    inorganic: 0
-  },
-  dap: {
+    inorganic: 65
+  },  dap: {
     organic: 0,
     inorganic: 210
   }
 };
 
-var SIMPLE_FIELDS = ['gravity', 'fermaid_O', 'dap'];
+var SIMPLE_FIELDS = ['gravity', 'fermaid_K', 'dap'];
 
 // in order
 var FIELD_LABELS = {
   gravity: 'Gravity (sg)',
-  fermaid_O_split: 'Fermaid O (%)',
-  fermaid_O: 'Fermaid O (g)',
-  fermaid_O_YAN: 'Fermaid O YAN (ppm)',
+  fermaid_K_split: 'Fermaid K (%)',
+  fermaid_K: 'Fermaid K (g)',
+  fermaid_K_YAN: 'Fermaid K YAN (ppm)',
   blank_row: '',
   dap_split: 'DAP (%)',
   dap: 'DAP (g)',
@@ -49,8 +48,8 @@ var YANCalculator = React.createClass({
     return {
       table : false,
 
-      final_gravity: 1.005,
-      original_gravity: 1.110,
+      final_gravity: 0.997,
+      original_gravity: 1.100,
       gravity_units: 'sg',
       volume: 20,
       volume_units: 'liter',
@@ -61,31 +60,25 @@ var YANCalculator = React.createClass({
       // TODO convert split to generic
       // TODO make split editable...
       steps: [{
-        name: 'At Mix',
-        when: 0,
-        allow_DAP: false,
-        dap_split: 0,
-        fermaid_O_split: 40
-      },{
         name: 'End of Lag',
         when: 0,
         dap_split: 50,
-        fermaid_O_split: 20
+        fermaid_K_split: 50
       },{
         name: '1/6 Sugar Break',
         when: 1/6,
         dap_split: 40,
-        fermaid_O_split: 20
+        fermaid_K_split: 30
       },{
         name: '1/3 Sugar Break',
         when: 1/3,
         dap_split: 10,
-        fermaid_O_split: 20
+        fermaid_K_split: 20
       },{
         total: true,
         name: 'Total',
         dap_split: null,
-        fermaid_O_split: null
+        fermaid_K_split: null
       }]
       //TODO other properties to do later
       // types of nutrients
@@ -115,9 +108,9 @@ var YANCalculator = React.createClass({
     var stepSummary = {};
     if (!step.total) {
       //TODO do some abstractions
-      stepSummary.fermaid_O_split = (step.fermaid_O_split/totals.fermaid_O_split*100).toFixed(2);
-      stepSummary.fermaid_O_YAN = (totals.fermaid_O_YAN*step.fermaid_O_split/100).toFixed(2);
-      stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
+      stepSummary.fermaid_K_split = (step.fermaid_K_split/totals.fermaid_K_split*100).toFixed(2);
+      stepSummary.fermaid_K_YAN = (totals.fermaid_K_YAN*step.fermaid_K_split/100).toFixed(2);
+      stepSummary.fermaid_K = (stepSummary.fermaid_K_YAN*this.state.volume/nutrients.fermaid_K.organic/2).toFixed(2);
 
       stepSummary.dap_split = (step.dap_split/totals.dap_split*100).toFixed(2);
       stepSummary.dap_YAN = (totals.dap_YAN*step.dap_split/100).toFixed(2);
@@ -125,9 +118,9 @@ var YANCalculator = React.createClass({
 
       stepSummary.gravity = (this.state.original_gravity - (totals.gravity * step.when)).toFixed(3);
     } else {
-      stepSummary.fermaid_O_split = 100;
-      stepSummary.fermaid_O_YAN = (totals.fermaid_O_YAN).toFixed(2);
-      stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
+      stepSummary.fermaid_K_split = 100;
+      stepSummary.fermaid_K_YAN = (totals.fermaid_K_YAN).toFixed(2);
+      stepSummary.fermaid_K = (stepSummary.fermaid_K_YAN*this.state.volume/nutrients.fermaid_K.organic/2).toFixed(2);
 
       stepSummary.dap_split = 100;
       stepSummary.dap_YAN = (totals.dap_YAN).toFixed(2);
@@ -140,14 +133,14 @@ var YANCalculator = React.createClass({
 
   _getStepSummaries: function() {
     var totals = {
-      fermaid_O_split : 0,
+      fermaid_K_split : 0,
       dap_split : 0,
       gravity : this.state.original_gravity - this.state.final_gravity,
-      dap_YAN : this.state.target_yan * ((100 - this.state.organic_ratio)/100),
-      fermaid_O_YAN: this.state.target_yan * (this.state.organic_ratio/100)
+      dap_YAN : this.state.target_yan * ((100 - this.state.organic_ratio)/100) - this.state.target_yan * (this.state.organic_ratio/100),
+      fermaid_K_YAN: this.state.target_yan * (this.state.organic_ratio/100)*2,
     };
     for (var i = this.state.steps.length - 1; i >= 0; i--) {
-      totals.fermaid_O_split+=this.state.steps[i].fermaid_O_split;
+      totals.fermaid_K_split+=this.state.steps[i].fermaid_K_split;
       totals.dap_split+=this.state.steps[i].dap_split;
     };
 
@@ -295,7 +288,7 @@ var YANCalculator = React.createClass({
           <input id="target_yan" type="number" onChange={this._onChange} value={this.state.target_yan}/>
         </FormField>
         <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms">
-          <input id="organic_ratio" min="0" max="100" type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
+          <input id="organic_ratio" min="0" max="50" type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
         <FormField htmlFor="details" help="To see more details in the output">
           <CheckBox id="details" name="details" label="Show Details" checked={this.state.details} onChange={this._onChangeCheckBox}/>
