@@ -342,7 +342,7 @@ var YANCalculator = React.createClass({
           <input id="target_yan" type="number" onChange={this._onChange} value={this.state.target_yan}/>
         </FormField>
         <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms">
-          <input id="organic_ratio" min="0" max="50" type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
+          <input id="organic_ratio" min="0" max={this.state.use_fermaid_k ? 50 : 100} type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
         <FormField htmlFor="use_fermaid_k" help="Choose to use Fermaid K over Fermaid O">
           <CheckBox id="use_fermaid_k" name="use_fermaid_k" label="Use Fermaid K" checked={this.state.use_fermaid_k} onChange={this._onChangeCheckBox}/>
