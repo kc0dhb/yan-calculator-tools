@@ -326,6 +326,15 @@ var YANCalculator = React.createClass({
     );
   },
 
+  validateOrganic : function() {
+    var max = this.state.use_fermaid_k ? 50 : 100;
+    if (this.state.organic_ratio > max) {
+      return "Max Organic Percentage is " + max + "%";
+    } else if (this.state.organic_ratio < 0) {
+      return "No such thing as negative nutrients"
+    }
+  },
+
   renderForm: function() {
     return (
       <Form onSubmit={this._onFormSubmit}>
@@ -341,7 +350,7 @@ var YANCalculator = React.createClass({
         <FormField label="YAN (ppm)" htmlFor="target_yan" help="225 is a good minimum for low nutrient yeast, 450 a max for high nutrient yeast">
           <input id="target_yan" type="number" onChange={this._onChange} value={this.state.target_yan}/>
         </FormField>
-        <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms">
+        <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms" error={this.validateOrganic()}>
           <input id="organic_ratio" min="0" max={this.state.use_fermaid_k ? 50 : 100} type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
         <FormField htmlFor="use_fermaid_k" help="Choose to use Fermaid K over Fermaid O">
