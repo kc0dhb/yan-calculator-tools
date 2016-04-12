@@ -82,13 +82,13 @@ var YANCalculator = React.createClass({
         fermaid_O_split: 20
       },{
         name: '1/6 Sugar Break',
-        when: 1/6,
+        when: 1 / 6,
         dap_split: 40,
         fermaid_K_split: 30,
         fermaid_O_split: 20
       },{
         name: '1/3 Sugar Break',
-        when: 1/3,
+        when: 1 / 3,
         dap_split: 10,
         fermaid_K_split: 20,
         fermaid_O_split: 20
@@ -129,25 +129,25 @@ var YANCalculator = React.createClass({
     var fermaidYAN = totals.type + '_YAN';
     if (!step.total) {
       // TODO do some abstractions
-      stepSummary[fermaidSplit] = (step[fermaidSplit]/totals.fermaid_split*100).toFixed(2);
-      stepSummary[fermaidYAN] = (totals.fermaid_YAN*step[fermaidSplit]/100).toFixed(2);
-      stepSummary[totals.type] = (stepSummary[fermaidYAN]*this.state.volume/
+      stepSummary[fermaidSplit] = (step[fermaidSplit] / totals.fermaid_split * 100).toFixed(2);
+      stepSummary[fermaidYAN] = (totals.fermaid_YAN * step[fermaidSplit] / 100).toFixed(2);
+      stepSummary[totals.type] = (stepSummary[fermaidYAN] * this.state.volume /
         (nutrients[totals.type].organic + nutrients[totals.type].inorganic)).toFixed(2);
 
-      stepSummary.dap_split = (step.dap_split/totals.dap_split*100).toFixed(2);
-      stepSummary.dap_YAN = (totals.dap_YAN*step.dap_split/100).toFixed(2);
-      stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
+      stepSummary.dap_split = (step.dap_split / totals.dap_split * 100).toFixed(2);
+      stepSummary.dap_YAN = (totals.dap_YAN * step.dap_split / 100).toFixed(2);
+      stepSummary.dap = (stepSummary.dap_YAN * this.state.volume / nutrients.dap.inorganic).toFixed(2);
 
       stepSummary.gravity = (this.state.original_gravity - (totals.gravity * step.when)).toFixed(3);
     } else {
       stepSummary[fermaidSplit] = 100;
       stepSummary[fermaidYAN] = (totals.fermaid_YAN).toFixed(2);
-      stepSummary[totals.type] = (stepSummary[fermaidYAN]*this.state.volume/
+      stepSummary[totals.type] = (stepSummary[fermaidYAN] * this.state.volume /
         (nutrients[totals.type].organic + nutrients[totals.type].inorganic)).toFixed(2);
 
       stepSummary.dap_split = 100;
       stepSummary.dap_YAN = (totals.dap_YAN).toFixed(2);
-      stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
+      stepSummary.dap = (stepSummary.dap_YAN * this.state.volume / nutrients.dap.inorganic).toFixed(2);
 
       stepSummary.gravity = "N/A";
     }
@@ -163,14 +163,14 @@ var YANCalculator = React.createClass({
       fermaid_split : 0,
       dap_split : 0,
       gravity : this.state.original_gravity - this.state.final_gravity,
-      dap_YAN : this.state.target_yan * ((100 - this.state.organic_ratio)/100)
-        - this.state.target_yan * ((this.state.organic_ratio/100)*(nutrients[type].inorganic)/nutrients[type].organic),
-      fermaid_YAN: this.state.target_yan * (this.state.organic_ratio/100) *
-      ((nutrients[type].organic + nutrients[type].inorganic)/nutrients[type].organic)
+      dap_YAN : this.state.target_yan * ((100 - this.state.organic_ratio) / 100)
+        - this.state.target_yan * ((this.state.organic_ratio / 100) * (nutrients[type].inorganic) / nutrients[type].organic),
+      fermaid_YAN: this.state.target_yan * (this.state.organic_ratio / 100) *
+      ((nutrients[type].organic + nutrients[type].inorganic) / nutrients[type].organic)
     };
     for (var i = this.state.steps.length - 1; i >= 0; i--) {
-      totals.fermaid_split+=this.state.steps[i][type + '_split'];
-      totals.dap_split+=this.state.steps[i].dap_split;
+      totals.fermaid_split += this.state.steps[i][type + '_split'];
+      totals.dap_split += this.state.steps[i].dap_split;
     };
 
     var stepSummaries = [];
