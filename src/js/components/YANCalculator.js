@@ -326,6 +326,32 @@ var YANCalculator = React.createClass({
     );
   },
 
+  requiredField: function(field) {
+    if (!this.state[field]) {
+      return "This field is required";
+    }
+  },
+
+  validateSG: function() {
+    if (parseFloat(this.state.final_gravity) >= parseFloat(this.state.original_gravity)) {
+      return "Original Gravity must be higher than Final Gravity";
+    }
+  },
+
+  validateOG: function() {
+    if (this.state.original_gravity > 1.2) {
+      return "Original Gravity probably too high";
+    }
+    return this.validateSG();
+  },
+
+  validateFG: function() {
+    if (this.state.final_gravity < 0.98) {
+      return "Final Gravity probably too low";
+    }
+    return this.validateSG();
+  },
+
   validateOrganic : function() {
     var max = this.state.use_fermaid_k ? 50 : 100;
     if (this.state.organic_ratio > max) {
@@ -338,19 +364,19 @@ var YANCalculator = React.createClass({
   renderForm: function() {
     return (
       <Form onSubmit={this._onFormSubmit}>
-        <FormField label="Volume (liters)" htmlFor="volume" >
+        <FormField label="Volume (liters)" htmlFor="volume" error={this.requiredField('volume')}>
           <input id="volume" type="number" onChange={this._onChange} value={this.state.volume}/>
         </FormField>
-        <FormField label="Original Gravity (sg)" htmlFor="original_gravity" >
+        <FormField label="Original Gravity (sg)" htmlFor="original_gravity" error={this.requiredField('original_gravity') || this.validateOG()} >
           <input id="original_gravity" {...SG_PROPERTIES} onChange={this._onChange} value={this.state.original_gravity}/>
         </FormField>
-        <FormField label="Final Gravity (sg)" htmlFor="final_gravity" >
+        <FormField label="Final Gravity (sg)" htmlFor="final_gravity" error={this.requiredField('final_gravity') || this.validateFG()} >
           <input id="final_gravity" {...SG_PROPERTIES} onChange={this._onChange} value={this.state.final_gravity}/>
         </FormField>
-        <FormField label="YAN (ppm)" htmlFor="target_yan" help="225 is a good minimum for low nutrient yeast, 450 a max for high nutrient yeast">
+        <FormField label="YAN (ppm)" htmlFor="target_yan" help="225 is a good minimum for low nutrient yeast, 450 a max for high nutrient yeast" error={this.requiredField('target_yan')}>
           <input id="target_yan" type="number" onChange={this._onChange} value={this.state.target_yan}/>
         </FormField>
-        <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms" error={this.validateOrganic()}>
+        <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms" error={this.requiredField('organic_ratio') || this.validateOrganic()}>
           <input id="organic_ratio" min="0" max={this.state.use_fermaid_k ? 50 : 100} type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
         <FormField htmlFor="use_fermaid_k" help="Choose to use Fermaid K over Fermaid O">
