@@ -22,7 +22,8 @@ var nutrients = {
   fermaid_K: {
     organic: 65,
     inorganic: 65
-  },  dap: {
+  },
+  dap: {
     organic: 0,
     inorganic: 210
   }
@@ -137,7 +138,7 @@ var YANCalculator = React.createClass({
       dap_split : 0,
       gravity : this.state.original_gravity - this.state.final_gravity,
       dap_YAN : this.state.target_yan * ((100 - this.state.organic_ratio)/100) - this.state.target_yan * (this.state.organic_ratio/100),
-      fermaid_K_YAN: this.state.target_yan * (this.state.organic_ratio/100)*2,
+      fermaid_K_YAN: this.state.target_yan * (this.state.organic_ratio/100)*2
     };
     for (var i = this.state.steps.length - 1; i >= 0; i--) {
       totals.fermaid_K_split+=this.state.steps[i].fermaid_K_split;
