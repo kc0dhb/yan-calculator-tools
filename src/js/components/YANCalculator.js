@@ -10,7 +10,6 @@ var CheckBox = require('grommet/components/CheckBox');
 var Tiles = require('grommet/components/Tiles');
 var Tile = require('grommet/components/Tile');
 
-
 var SG_PROPERTIES = {
   type: "number",
   min: "0",
@@ -83,13 +82,13 @@ var YANCalculator = React.createClass({
         fermaid_O_split: 20
       },{
         name: '1/6 Sugar Break',
-        when: 1/6,
+        when: 1 / 6,
         dap_split: 40,
         fermaid_K_split: 30,
         fermaid_O_split: 20
       },{
         name: '1/3 Sugar Break',
-        when: 1/3,
+        when: 1 / 3,
         dap_split: 10,
         fermaid_K_split: 20,
         fermaid_O_split: 20
@@ -126,37 +125,29 @@ var YANCalculator = React.createClass({
 
   _calculateStepTotals : function(step, totals) {
     var stepSummary = {};
+    var fermaidSplit = totals.type + '_split';
+    var fermaidYAN = totals.type + '_YAN';
     if (!step.total) {
       // TODO do some abstractions
-      if (this.state.use_fermaid_k) {
-        stepSummary.fermaid_K_split = (step.fermaid_K_split/totals.fermaid_K_split*100).toFixed(2);
-        stepSummary.fermaid_K_YAN = (totals.fermaid_K_YAN*step.fermaid_K_split/100).toFixed(2);
-        stepSummary.fermaid_K = (stepSummary.fermaid_K_YAN*this.state.volume/nutrients.fermaid_K.organic/2).toFixed(2);
-      } else {
-        stepSummary.fermaid_O_split = (step.fermaid_O_split/totals.fermaid_O_split*100).toFixed(2);
-        stepSummary.fermaid_O_YAN = (totals.fermaid_O_YAN*step.fermaid_O_split/100).toFixed(2);
-        stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
-      }
+      stepSummary[fermaidSplit] = (step[fermaidSplit] / totals.fermaid_split * 100).toFixed(2);
+      stepSummary[fermaidYAN] = (totals.fermaid_YAN * step[fermaidSplit] / 100).toFixed(2);
+      stepSummary[totals.type] = (stepSummary[fermaidYAN] * this.state.volume /
+        (nutrients[totals.type].organic + nutrients[totals.type].inorganic)).toFixed(2);
 
-      stepSummary.dap_split = (step.dap_split/totals.dap_split*100).toFixed(2);
-      stepSummary.dap_YAN = (totals.dap_YAN*step.dap_split/100).toFixed(2);
-      stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
+      stepSummary.dap_split = (step.dap_split / totals.dap_split * 100).toFixed(2);
+      stepSummary.dap_YAN = (totals.dap_YAN * step.dap_split / 100).toFixed(2);
+      stepSummary.dap = (stepSummary.dap_YAN * this.state.volume / nutrients.dap.inorganic).toFixed(2);
 
       stepSummary.gravity = (this.state.original_gravity - (totals.gravity * step.when)).toFixed(3);
     } else {
-      // TODO do some abstractions
-      if (this.state.use_fermaid_k) {
-        stepSummary.fermaid_K_split = 100;
-        stepSummary.fermaid_K_YAN = (totals.fermaid_K_YAN).toFixed(2);
-        stepSummary.fermaid_K = (stepSummary.fermaid_K_YAN*this.state.volume/nutrients.fermaid_K.organic/2).toFixed(2);
-      } else {
-        stepSummary.fermaid_O_split = 100;
-        stepSummary.fermaid_O_YAN = (totals.fermaid_O_YAN).toFixed(2);
-        stepSummary.fermaid_O = (stepSummary.fermaid_O_YAN*this.state.volume/nutrients.fermaid_O.organic).toFixed(2);
-      }
+      stepSummary[fermaidSplit] = 100;
+      stepSummary[fermaidYAN] = (totals.fermaid_YAN).toFixed(2);
+      stepSummary[totals.type] = (stepSummary[fermaidYAN] * this.state.volume /
+        (nutrients[totals.type].organic + nutrients[totals.type].inorganic)).toFixed(2);
+
       stepSummary.dap_split = 100;
       stepSummary.dap_YAN = (totals.dap_YAN).toFixed(2);
-      stepSummary.dap = (stepSummary.dap_YAN*this.state.volume/nutrients.dap.inorganic).toFixed(2);
+      stepSummary.dap = (stepSummary.dap_YAN * this.state.volume / nutrients.dap.inorganic).toFixed(2);
 
       stepSummary.gravity = "N/A";
     }
@@ -165,34 +156,23 @@ var YANCalculator = React.createClass({
 
   _getStepSummaries: function() {
     var totals;
+    var type = this.state.use_fermaid_k ? 'fermaid_K' : 'fermaid_O';
     // TODO abstract this nicer
-    if (this.state.use_fermaid_k) {
-      totals = {
-        fermaid_K_split : 0,
-        dap_split : 0,
-        gravity : this.state.original_gravity - this.state.final_gravity,
-        dap_YAN : this.state.target_yan * ((100 - this.state.organic_ratio)/100) - this.state.target_yan * (this.state.organic_ratio/100),
-        fermaid_K_YAN: this.state.target_yan * (this.state.organic_ratio/100)*2
-      };
-      for (var i = this.state.steps.length - 1; i >= 0; i--) {
-        totals.fermaid_K_split+=this.state.steps[i].fermaid_K_split;
-        totals.dap_split+=this.state.steps[i].dap_split;
-      };
+    totals = {
+      type : type,
+      fermaid_split : 0,
+      dap_split : 0,
+      gravity : this.state.original_gravity - this.state.final_gravity,
+      dap_YAN : this.state.target_yan * ((100 - this.state.organic_ratio) / 100)
+        - this.state.target_yan * ((this.state.organic_ratio / 100) * (nutrients[type].inorganic) / nutrients[type].organic),
+      fermaid_YAN: this.state.target_yan * (this.state.organic_ratio / 100) *
+      ((nutrients[type].organic + nutrients[type].inorganic) / nutrients[type].organic)
+    };
+    for (var i = this.state.steps.length - 1; i >= 0; i--) {
+      totals.fermaid_split += this.state.steps[i][type + '_split'];
+      totals.dap_split += this.state.steps[i].dap_split;
+    };
 
-    } else {
-      totals = {
-        fermaid_O_split : 0,
-        dap_split : 0,
-        gravity : this.state.original_gravity - this.state.final_gravity,
-        dap_YAN : this.state.target_yan * ((100 - this.state.organic_ratio)/100),
-        fermaid_O_YAN: this.state.target_yan * (this.state.organic_ratio/100)
-      };
-      for (var i = this.state.steps.length - 1; i >= 0; i--) {
-        totals.fermaid_O_split+=this.state.steps[i].fermaid_O_split;
-        totals.dap_split+=this.state.steps[i].dap_split;
-      };
-
-    }
     var stepSummaries = [];
     for (var i = 0; i < this.state.steps.length; i++) {
       stepSummaries.push(this._calculateStepTotals(this.state.steps[i], totals));
