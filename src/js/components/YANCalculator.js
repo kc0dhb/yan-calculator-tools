@@ -331,7 +331,7 @@ var YANCalculator = React.createClass({
     if (this.state.organic_ratio > max) {
       return "Max Organic Percentage is " + max + "%";
     } else if (this.state.organic_ratio < 0) {
-      return "No such thing as negative nutrients"
+      return "No such thing as negative nutrients";
     }
   },
 
