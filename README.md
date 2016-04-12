@@ -2,4 +2,4 @@
 
 Helper tools to calculate YAN for mead
 
-[Travis Live Deploy](http://meadadvocate.org/tools/travis/yan-calculator-tools/)
+[Travis Live Deploy](http://meadadvocate.org/tools/travis/yan-calculator-tools/master/)
