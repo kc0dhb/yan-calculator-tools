@@ -32,11 +32,12 @@ var nutrients = {
   }
 };
 
-var SIMPLE_FIELDS = ['gravity', 'fermaid_K', 'fermaid_O', 'dap'];
+var SIMPLE_FIELDS = ['gravity', 'brix', 'fermaid_K', 'fermaid_O', 'dap'];
 
 // in order
 var FIELD_LABELS = {
   gravity: 'Gravity (sg)',
+  brix: 'Apparent Gravity (brix)*',
   fermaid_K_split: 'Fermaid K (%)',
   fermaid_K: 'Fermaid K (g)',
   fermaid_K_YAN: 'Fermaid K YAN (ppm)',
@@ -123,6 +124,29 @@ var YANCalculator = React.createClass({
     this.setState(change);
   },
 
+  _sg_to_brix: function(sg) {
+    return 135.997*Math.pow(sg,3)-630.272*Math.pow(sg,2)+1111.14*sg-616.868;;
+  },
+
+  _calculate_brix_measurement: function(o_sg, f) {
+    var o = this._sg_to_brix(o_sg);
+    // var c = Math.pow(2,2);
+    // var o=form.d.value;//original brix
+    // var c = form.e.value //current brix
+    // converted this
+    // var f=1.001843-0.002318474*(o)-0.000007775*(o*o)-0.000000034*(o*o*o)+0.00574*(c)+0.00003344*(c*c)+0.000000086*(c*c*c)
+    // to this with wolfram alpha
+    var c = -129.612+0.00307636 * Math.pow(Math.sqrt(
+      Math.pow(199692000000000 * f + 6789528 * o*o*o +1552605300 * o*o + 462980710008 * o - 126281601124000 , 2)
+      + 190833143166481825567604736) + 199692000000000 * f + 6789528 * o*o*o +1552605300 * o*o + 462980710008 * o-126281601124000, 1/3)
+    -(1.77115*Math.pow(10,6))/Math.pow((Math.sqrt(
+      Math.pow(199692000000000 * f+6789528 * o*o*o +1552605300 * o*o + 462980710008 * o-126281601124000, 2)
+      +190833143166481825567604736)+199692000000000 * f + 6789528 * o*o*o +1552605300 * o*o +462980710008 * o-126281601124000),(1/3));
+    return c;
+  //g=(Math.round(f*1000)/1000)
+  //form.ans.value=g
+  },
+
   _calculateStepTotals : function(step, totals) {
     var stepSummary = {};
     var fermaidSplit = totals.type + '_split';
@@ -139,6 +163,11 @@ var YANCalculator = React.createClass({
       stepSummary.dap = (stepSummary.dap_YAN * this.state.volume / nutrients.dap.inorganic).toFixed(2);
 
       stepSummary.gravity = (this.state.original_gravity - (totals.gravity * step.when)).toFixed(3);
+      if (step.when === 0) {
+        stepSummary.brix = (this._sg_to_brix(stepSummary.gravity)).toFixed(1);
+      } else {
+        stepSummary.brix = (this._calculate_brix_measurement(this.state.original_gravity, stepSummary.gravity)).toFixed(1);
+      }
     } else {
       stepSummary[fermaidSplit] = 100;
       stepSummary[fermaidYAN] = (totals.fermaid_YAN).toFixed(2);
@@ -150,6 +179,7 @@ var YANCalculator = React.createClass({
       stepSummary.dap = (stepSummary.dap_YAN * this.state.volume / nutrients.dap.inorganic).toFixed(2);
 
       stepSummary.gravity = "N/A";
+      stepSummary.brix = "N/A";
     }
     return stepSummary;
   },
@@ -388,6 +418,10 @@ var YANCalculator = React.createClass({
         </Section>
         <Section pad="none" key="outputs">
           {this.renderOutput()}
+        </Section>
+        <Section>
+          *Apparent Gravity (brix) is the gravity measured on a refractometer.
+          It is not the true gravity when alcohol is present.
         </Section>
       </Section>
     );
