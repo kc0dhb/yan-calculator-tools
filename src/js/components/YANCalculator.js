@@ -23,7 +23,7 @@ var nutrients = {
     inorganic: 65
   },
   fermaid_O: {
-    organic: 65,
+    organic: 40,
     inorganic: 0
   },
   dap: {
