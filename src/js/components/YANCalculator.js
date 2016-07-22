@@ -19,8 +19,8 @@ var SG_PROPERTIES = {
 // nutrient provides ppm per g/L
 var nutrients = {
   fermaid_K: {
-    organic: 65,
-    inorganic: 65
+    organic: 50,
+    inorganic: 50
   },
   fermaid_O: {
     organic: 40,
