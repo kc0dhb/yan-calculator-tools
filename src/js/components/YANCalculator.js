@@ -212,28 +212,28 @@ var YANCalculator = React.createClass({
   renderTable: function() {
     var stepSummaries = this._getStepSummaries();
 
-    var headers = [<th>Nutrient</th>];
+    var headers = [<th key="Nutrient">Nutrient</th>];
     for (var i = 0; i < this.state.steps.length; i++) {
-      headers.push(<th>{this.state.steps[i].name}</th>);
+      headers.push(<th key = {this.state.steps[i].name}>{this.state.steps[i].name}</th>);
     }
 
     var body = {};
     for (var field in FIELD_LABELS) {
-      body[field] = [<td>{FIELD_LABELS[field]}</td>];
+      body[field] = [<td key={field}>{FIELD_LABELS[field]}</td>];
     }
 
     for (var i = 0; i < stepSummaries.length; i++) {
       var stepSummary = stepSummaries[i];
 
       for (var key in stepSummary) {
-        body[key].push(<td>{stepSummary[key]}</td>);
+        body[key].push(<td key={i} >{stepSummary[key]}</td>);
       }
     };
 
     var renderedBody =[];
     for (var part in body) {
       if (this.shouldShow(part)) {
-        renderedBody.push(<tr className={this._fieldClass(part)} >{body[part]}</tr>);
+        renderedBody.push(<tr key={part} className={this._fieldClass(part)} >{body[part]}</tr>);
       }
     }
     return (
