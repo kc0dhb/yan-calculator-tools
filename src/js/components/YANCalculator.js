@@ -233,7 +233,7 @@ var YANCalculator = React.createClass({
     var renderedBody =[];
     for (var part in body) {
       if (this.shouldShow(part)) {
-        renderedBody.push(<tr>{body[part]}</tr>);
+        renderedBody.push(<tr className={this._fieldClass(part)} >{body[part]}</tr>);
       }
     }
     return (
@@ -255,6 +255,15 @@ var YANCalculator = React.createClass({
       && (SIMPLE_FIELDS.indexOf(field) !== -1 || this.state.details);
   },
 
+  _fieldClass: function(field) {
+    if (!this.state.details) {
+      return '';
+    } else if (SIMPLE_FIELDS.indexOf(field) !== -1) {
+      return 'important-bits';
+    }
+    return '';
+  },
+
   renderFlat: function() {
     var stepSummaries = this._getStepSummaries();
     var steps = [];
@@ -266,7 +275,7 @@ var YANCalculator = React.createClass({
       for (var field in FIELD_LABELS) {
         if (this.shouldShow(field)) {
           body.push(
-            <tr key={field}>
+            <tr key={field} className={this._fieldClass(field)}>
               <td>{FIELD_LABELS[field]}</td>
               <td>{stepSummaries[i][field]}</td>
             </tr>
