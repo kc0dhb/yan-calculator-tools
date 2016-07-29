@@ -266,7 +266,7 @@ var YANCalculator = React.createClass({
       for (var field in FIELD_LABELS) {
         if (this.shouldShow(field)) {
           body.push(
-            <tr>
+            <tr key={field}>
               <td>{FIELD_LABELS[field]}</td>
               <td>{stepSummaries[i][field]}</td>
             </tr>
@@ -275,7 +275,7 @@ var YANCalculator = React.createClass({
       }
 
       steps.push(
-        <Tile className="summary-tile">
+        <Tile key={step.name} className="summary-tile">
           <Header pad="none" tag="h3">{step.name}</Header>
           <Table>
             <tbody>
