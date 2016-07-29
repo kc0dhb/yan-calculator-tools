@@ -14,7 +14,7 @@ var Main = React.createClass({
     //TODO get footer to float to bottom?
     return (
       <App centered={false}>
-        <Header className="no-print" appCentered={true} align="center" colorIndex="grey-1">
+        <Header className="no-print" appCentered={true} colorIndex="grey-1">
           <Title>YAN Calculator</Title>
         </Header>
         <YANCalculator />
