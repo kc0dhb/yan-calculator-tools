@@ -4,6 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var App = require('grommet/components/App');
 var Footer = require('grommet/components/Footer');
+var Title = require('grommet/components/Title');
 var Header = require('grommet/components/Header');
 var YANCalculator = require('./components/YANCalculator');
 
@@ -13,8 +14,8 @@ var Main = React.createClass({
     //TODO get footer to float to bottom?
     return (
       <App centered={false}>
-        <Header className="no-print" appCentered={false} direction="column" align="center" pad="none" colorIndex="grey-1">
-          <p>YAN Calculator</p>
+        <Header className="no-print" appCentered={true} align="center" colorIndex="grey-1">
+          <Title>YAN Calculator</Title>
         </Header>
         <YANCalculator />
         <Footer className="no-print" appCentered={false} direction="column" align="end" pad={{horizontal: 'small'}} colorIndex="grey-1">
