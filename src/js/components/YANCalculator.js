@@ -370,6 +370,10 @@ var YANCalculator = React.createClass({
     }
   },
 
+  _calcYan: function(nutrient) {
+    return (nutrient.organic + nutrient.inorganic)/10;
+  },
+
   renderForm: function() {
     return (
       <Form onSubmit={this._onFormSubmit}>
@@ -388,7 +392,7 @@ var YANCalculator = React.createClass({
         <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms" error={this.requiredField('organic_ratio') || this.validateOrganic()}>
           <input id="organic_ratio" min="0" max={this.state.use_fermaid_k ? 50 : 100} type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
-        <FormField htmlFor="use_fermaid_k" help="Choose to use Fermaid K over Fermaid O">
+        <FormField htmlFor="use_fermaid_k" help={"Choose to use Fermaid K (" + this._calcYan(nutrients.fermaid_K) + "% YAN) over Fermaid O (" + this._calcYan(nutrients.fermaid_O) + "% YAN)"}>
           <CheckBox id="use_fermaid_k" name="use_fermaid_k" label="Use Fermaid K" checked={this.state.use_fermaid_k} onChange={this._onChangeCheckBox}/>
         </FormField>
         <FormField htmlFor="details" help="To see more details in the output">
