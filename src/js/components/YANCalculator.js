@@ -54,7 +54,7 @@ var YANCalculator = React.createClass({
   getInitialState: function() {
     return {
       table : false,
-
+      details : false,
       final_gravity: 0.997,
       original_gravity: 1.100,
       gravity_units: 'sg',
