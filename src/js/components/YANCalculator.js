@@ -44,7 +44,6 @@ var FIELD_LABELS = {
   fermaid_O_split: 'Fermaid O (%)',
   fermaid_O: 'Fermaid O (g)',
   fermaid_O_YAN: 'Fermaid O YAN (ppm)',
-  blank_row: '',
   dap_split: 'DAP (%)',
   dap: 'DAP (g)',
   dap_YAN: 'DAP YAN (ppm)'
@@ -287,7 +286,7 @@ var YANCalculator = React.createClass({
       );
     };
     return (
-      <Tiles pad="none" flush={false}>
+      <Tiles fill={true} pad="none" flush={false}>
         {this.renderPrintTile()}
         {steps}
       </Tiles>
