@@ -383,7 +383,6 @@ var YANCalculator = React.createClass({
 
   validateOrganic : function() {
     var max = this.state.use_fermaid_k ? (100 * nutrients.fermaid_K.organic / (nutrients.fermaid_K.organic + nutrients.fermaid_K.inorganic)) : 100;
-    console.log(max)
     if (this.state.organic_ratio > max) {
       return "Max Organic Percentage is " + max + "%";
     } else if (this.state.organic_ratio < 0) {
@@ -402,7 +401,7 @@ var YANCalculator = React.createClass({
           <input id="volume" type="number" onChange={this._onChange} value={this.state.volume}/>
         </FormField>
         <FormField label="Volume (Gallons)" htmlFor="volume_g" help="Currently a display only field">
-          <input id="volume_g" type="text" readonly="true" value={(this.state.volume/3.78541).toFixed(2)}/>
+          <input id="volume_g" type="number" readOnly="true" value={(this.state.volume/3.78541).toFixed(2)}/>
         </FormField>
         <FormField label="Original Gravity (sg)" htmlFor="original_gravity" error={this.requiredField('original_gravity') || this.validateOG()} >
           <input id="original_gravity" {...SG_PROPERTIES} onChange={this._onChange} value={this.state.original_gravity}/>
