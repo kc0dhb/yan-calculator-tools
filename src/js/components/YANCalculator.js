@@ -19,8 +19,8 @@ var SG_PROPERTIES = {
 // nutrient provides ppm per g/L
 var nutrients = {
   fermaid_K: {
-    organic: 50,
-    inorganic: 50
+    organic: 110.5, // Max on msds
+    inorganic: 160 - 110.5
   },
   fermaid_O: {
     organic: 40,
@@ -29,6 +29,10 @@ var nutrients = {
   dap: {
     organic: 0,
     inorganic: 210
+  },
+  gusmer: {
+    organic: 12,
+    inorganic: 5
   }
 };
 
@@ -38,9 +42,9 @@ var SIMPLE_FIELDS = ['gravity', 'brix', 'fermaid_K', 'fermaid_O', 'dap'];
 var FIELD_LABELS = {
   gravity: 'Gravity (sg)',
   brix: 'Apparent Gravity (brix)*',
-  fermaid_K_split: 'Fermaid K (%)',
-  fermaid_K: 'Fermaid K (g)',
-  fermaid_K_YAN: 'Fermaid K YAN (ppm)',
+  fermaid_K_split: 'Gusmer ME (%)',
+  fermaid_K: 'Gusmer ME (g)',
+  fermaid_K_YAN: 'Gusmer ME YAN (ppm)',
   fermaid_O_split: 'Fermaid O (%)',
   fermaid_O: 'Fermaid O (g)',
   fermaid_O_YAN: 'Fermaid O YAN (ppm)',
@@ -56,14 +60,14 @@ var YANCalculator = React.createClass({
       table : false,
       details : false,
       final_gravity: 0.997,
-      original_gravity: 1.100,
+      original_gravity: 1.060,
       gravity_units: 'sg',
-      volume: 20,
+      volume: 1703.44,
       volume_units: 'liter',
-      target_yan: 250,
+      target_yan: 30,
       // target_yan_units: PPM
-      organic_ratio: 35,
-      use_fermaid_k: false,
+      organic_ratio: (100 * nutrients.fermaid_K.organic / (nutrients.fermaid_K.organic + nutrients.fermaid_K.inorganic)),
+      use_fermaid_k: true,
 
       // TODO convert split to generic
       // TODO make split editable...
@@ -77,20 +81,22 @@ var YANCalculator = React.createClass({
       },{
         name: 'End of Lag',
         when: 0,
-        dap_split: 50,
-        fermaid_K_split: 50,
+        dap_split: 70,
+        fermaid_K_split: 70,
         fermaid_O_split: 20
+/*
       },{
         name: '1/6 Sugar Break',
         when: 1 / 6,
-        dap_split: 40,
-        fermaid_K_split: 30,
+        dap_split: 0,
+        fermaid_K_split: 0,
         fermaid_O_split: 20
+*/
       },{
         name: '1/3 Sugar Break',
         when: 1 / 3,
-        dap_split: 10,
-        fermaid_K_split: 20,
+        dap_split: 30,
+        fermaid_K_split: 30,
         fermaid_O_split: 20
       },{
         total: true,
@@ -371,7 +377,8 @@ var YANCalculator = React.createClass({
   },
 
   validateOrganic : function() {
-    var max = this.state.use_fermaid_k ? 50 : 100;
+    var max = this.state.use_fermaid_k ? (100 * nutrients.fermaid_K.organic / (nutrients.fermaid_K.organic + nutrients.fermaid_K.inorganic)) : 100;
+    console.log(max)
     if (this.state.organic_ratio > max) {
       return "Max Organic Percentage is " + max + "%";
     } else if (this.state.organic_ratio < 0) {
@@ -395,14 +402,11 @@ var YANCalculator = React.createClass({
         <FormField label="Final Gravity (sg)" htmlFor="final_gravity" error={this.requiredField('final_gravity') || this.validateFG()} >
           <input id="final_gravity" {...SG_PROPERTIES} onChange={this._onChange} value={this.state.final_gravity}/>
         </FormField>
-        <FormField label="YAN (ppm)" htmlFor="target_yan" help="225 is a good minimum for low nutrient yeast, 450 a max for high nutrient yeast" error={this.requiredField('target_yan')}>
+        <FormField label="YAN (ppm)**" htmlFor="target_yan" help="30 is a good minimum for mash, 120 a good minimum for sugar wash" error={this.requiredField('target_yan')}>
           <input id="target_yan" type="number" onChange={this._onChange} value={this.state.target_yan}/>
         </FormField>
         <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms" error={this.requiredField('organic_ratio') || this.validateOrganic()}>
-          <input id="organic_ratio" min="0" max={this.state.use_fermaid_k ? 50 : 100} type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
-        </FormField>
-        <FormField htmlFor="use_fermaid_k" help={"Choose to use Fermaid K (" + this._calcYan(nutrients.fermaid_K) + "% YAN) over Fermaid O (" + this._calcYan(nutrients.fermaid_O) + "% YAN)"}>
-          <CheckBox id="use_fermaid_k" name="use_fermaid_k" label="Use Fermaid K" checked={this.state.use_fermaid_k} onChange={this._onChangeCheckBox}/>
+          <input id="organic_ratio" min="0" max={this.state.use_fermaid_k ? 100 : 100} type="number" onChange={this._onChange} value={this.state.organic_ratio}/>
         </FormField>
         <FormField htmlFor="details" help="To see more details in the output">
           <CheckBox id="details" name="details" label="Show Details" checked={this.state.details} onChange={this._onChangeCheckBox}/>
@@ -434,6 +438,8 @@ var YANCalculator = React.createClass({
         <Section>
           *Apparent Gravity (brix) is the gravity measured on a refractometer.
           It is not the true gravity when alcohol is present.
+          <br/>
+          **Over 31.155 ppm of pure gusmer, you should do Staggered Nutrient. 96ppm is max for gusmer yeast nutrient alone.
         </Section>
       </Section>
     );
