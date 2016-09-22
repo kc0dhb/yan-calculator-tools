@@ -19,8 +19,9 @@ var SG_PROPERTIES = {
 // nutrient provides ppm per g/L
 var nutrients = {
   fermaid_K: {
-    organic: 110.5, // Max on msds
-    inorganic: 160 - 110.5
+    // msds on gusmer says 10-50% DAP, which is 22.10ppm to 110.5 ppm
+    organic: 88.4, // .75% of max on msds
+    inorganic: 145 - 88.4
   },
   fermaid_O: {
     organic: 40,
@@ -57,14 +58,14 @@ var YANCalculator = React.createClass({
 
   getInitialState: function() {
     return {
-      table : false,
+      table : true,
       details : false,
       final_gravity: 0.997,
       original_gravity: 1.060,
       gravity_units: 'sg',
       volume: 1703.44,
       volume_units: 'liter',
-      target_yan: 30,
+      target_yan: 35,
       // target_yan_units: PPM
       organic_ratio: (100 * nutrients.fermaid_K.organic / (nutrients.fermaid_K.organic + nutrients.fermaid_K.inorganic)),
       use_fermaid_k: true,
@@ -320,6 +321,10 @@ var YANCalculator = React.createClass({
             <td>{(1*this.state.volume).toFixed(2)}</td>
           </tr>
           <tr>
+            <td>Volume (Gallons)</td>
+            <td>{(1*this.state.volume/3.78541).toFixed(2)}</td>
+          </tr>
+          <tr>
             <td>Original Gravity (sg)</td>
             <td>{(1*this.state.original_gravity).toFixed(3)}</td>
           </tr>
@@ -396,13 +401,16 @@ var YANCalculator = React.createClass({
         <FormField label="Volume (liters)" htmlFor="volume" error={this.requiredField('volume')}>
           <input id="volume" type="number" onChange={this._onChange} value={this.state.volume}/>
         </FormField>
+        <FormField label="Volume (Gallons)" htmlFor="volume_g" help="Currently a display only field">
+          <input id="volume_g" type="text" readonly="true" value={(this.state.volume/3.78541).toFixed(2)}/>
+        </FormField>
         <FormField label="Original Gravity (sg)" htmlFor="original_gravity" error={this.requiredField('original_gravity') || this.validateOG()} >
           <input id="original_gravity" {...SG_PROPERTIES} onChange={this._onChange} value={this.state.original_gravity}/>
         </FormField>
         <FormField label="Final Gravity (sg)" htmlFor="final_gravity" error={this.requiredField('final_gravity') || this.validateFG()} >
           <input id="final_gravity" {...SG_PROPERTIES} onChange={this._onChange} value={this.state.final_gravity}/>
         </FormField>
-        <FormField label="YAN (ppm)**" htmlFor="target_yan" help="30 is a good minimum for mash, 120 a good minimum for sugar wash" error={this.requiredField('target_yan')}>
+        <FormField label="YAN (ppm)**" htmlFor="target_yan" help="35 is a good minimum for grain mash, 120 a good minimum for sugar wash" error={this.requiredField('target_yan')}>
           <input id="target_yan" type="number" onChange={this._onChange} value={this.state.target_yan}/>
         </FormField>
         <FormField label="Organic Percentage (%)" htmlFor="organic_ratio" help="Organic is more expensive, inorganic can cause more yeast blooms" error={this.requiredField('organic_ratio') || this.validateOrganic()}>
@@ -439,7 +447,7 @@ var YANCalculator = React.createClass({
           *Apparent Gravity (brix) is the gravity measured on a refractometer.
           It is not the true gravity when alcohol is present.
           <br/>
-          **Over 31.155 ppm of pure gusmer, you should do Staggered Nutrient. 96ppm is max for gusmer yeast nutrient alone.
+          **Over 35 ppm of pure gusmer, you should do Staggered Nutrient. 140ppm is max for gusmer yeast nutrient alone.
         </Section>
       </Section>
     );
